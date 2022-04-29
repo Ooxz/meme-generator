@@ -80,3 +80,15 @@ body {
 	line-height: 19px;
 	cursor: pointer;
 }
+
+.image-container {
+	display: flex;
+	justify-content: center;
+	margin-top: 36px;
+}
+
+.image {
+
+	width: 477px;
+	height: 268px;
+}
