@@ -20,34 +20,39 @@ const Meme = () => {
      * correct way.
      */
     
-	const [memeImage, setMemeImage] = useState({
+	const [meme, setMeme] = useState({
 		topText: "",
 		bottomText: "",
 		randomImage: "http://i.imgflip.com/1bij.jpg"
 	})
 
+	function setTextEvent() {
+		setMeme(() => {
+			return console.log("changed")
+	})
+}
 	const [allMemeImages, setAllMemeImages] = useState(memesData)
 
 	function getMemeImage() {
 		const memesArray = memesData.data.memes
 		const randomNumber = [Math.floor(Math.random()*memesArray.length)];
 		const url = memesArray[randomNumber].url;
-		setMemeImage(url);
+		setAllMemeImages(url);
 		console.log(url)
 	}
 	return (
 		<main>
 		<div className="form">
 			<div className="input-container">
-			<input type="text" className="first-input" placeholder="Text for the top of the image"></input>
-			<input type="text" className="second-input" placeholder="Text for the bottom of the image"></input>
+			<input type="text" className="first-input" onChange={setTextEvent} placeholder="Text for the top of the image"></input>
+			<input type="text" className="second-input" onChange={setTextEvent} placeholder="Text for the bottom of the image"></input>
 			</div>
 			<div className="button-container">
 			<button onClick={getMemeImage} type="button" className="button"><img src={button} alt="" /></button>
 			</div>
 		</div>
 		<div className='image-container'>
-		<img src={memeImage.randomImage} alt="" className='image'/>
+		<img src={allMemeImages}alt="" className='image'/>
 		</div>
 		</main>
 	)
