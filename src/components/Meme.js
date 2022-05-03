@@ -1,6 +1,6 @@
 import button from '../images/button.png'
 import memesData from '../memesData.js'
-import React, {useState} from 'react'
+import React, {useDebugValue, useState} from 'react'
 
 const Meme = () => {
 /**
@@ -27,32 +27,40 @@ const Meme = () => {
 	})
 
 	function setTextEvent() {
-		setMeme(() => {
-			return console.log("changed")
+		setMeme(prevState => {
+			return {
+				...prevState,
+			topText: "",
+			bottomText: ""
+			}
+		
 	})
 }
 	const [allMemeImages, setAllMemeImages] = useState(memesData)
 
 	function getMemeImage() {
-		const memesArray = memesData.data.memes
+		const memesArray = allMemeImages.data.memes
 		const randomNumber = [Math.floor(Math.random()*memesArray.length)];
 		const url = memesArray[randomNumber].url;
-		setAllMemeImages(url);
+		setMeme(prevMeme => ({
+			...prevMeme,
+			randomImage: url
+		}));
 		console.log(url)
 	}
 	return (
 		<main>
 		<div className="form">
 			<div className="input-container">
-			<input type="text" className="first-input" onChange={setTextEvent} placeholder="Text for the top of the image"></input>
-			<input type="text" className="second-input" onChange={setTextEvent} placeholder="Text for the bottom of the image"></input>
+			<input type="text" value={meme.topText} className="first-input" onChange={setTextEvent} placeholder="Text for the top of the image"/>
+			<input type="text" value={meme.bottomText} className="second-input" onChange={setTextEvent} placeholder="Text for the bottom of the image"/>
 			</div>
 			<div className="button-container">
 			<button onClick={getMemeImage} type="button" className="button"><img src={button} alt="" /></button>
 			</div>
 		</div>
 		<div className='image-container'>
-		<img src={allMemeImages}alt="" className='image'/>
+		<img src={meme.randomImage} alt="" className='image'/>
 		</div>
 		</main>
 	)
