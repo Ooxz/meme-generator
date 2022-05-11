@@ -1,6 +1,6 @@
 import button from '../images/button.png'
 import memesData from '../memesData.js'
-import React, {useDebugValue, useState} from 'react'
+import React, {useState} from 'react'
 
 const Meme = () => {
 /**
