@@ -1,69 +1,95 @@
-import button from '../images/button.png'
-import memesData from '../memesData.js'
-import React, {useState} from 'react'
+import button from "../images/button.png";
+import memesData from "../memesData.js";
+import React, { useState, useEffect } from "react";
 
 const Meme = () => {
-/**
-     * Challenge: Update our state to save the meme-related
-     * data as an object called `meme`. It should have the
-     * following 3 properties:
-     * topText, bottomText, randomImage.
-     * 
-     * The 2 text states can default to empty strings for now,
-     * amd randomImage should default to "http://i.imgflip.com/1bij.jpg"
-     * 
-     * Next, create a new state variable called `allMemeImages`
-     * which will default to `memesData`, which we imported above
-     * 
-     * Lastly, update the `getMemeImage` function and the markup 
-     * to reflect our newly reformed state object and array in the
-     * correct way.
-     */
-    
-	const [meme, setMeme] = useState({
-		topText: "",
-		bottomText: "",
-		randomImage: "http://i.imgflip.com/1bij.jpg"
-	})
+  /**
+   * Challenge: Update our state to save the meme-related
+   * data as an object called `meme`. It should have the
+   * following 3 properties:
+   * topText, bottomText, randomImage.
+   *
+   * The 2 text states can default to empty strings for now,
+   * amd randomImage should default to "http://i.imgflip.com/1bij.jpg"
+   *
+   * Next, create a new state variable called `allMemeImages`
+   * which will default to `memesData`, which we imported above
+   *
+   * Lastly, update the `getMemeImage` function and the markup
+   * to reflect our newly reformed state object and array in the
+   * correct way.
+   */
 
-	function setTextEvent() {
-		setMeme(prevState => {
-			return {
-				...prevState,
-			topText: "",
-			bottomText: ""
-			}
-		
-	})
-}
-	const [allMemeImages, setAllMemeImages] = useState(memesData)
+  const [meme, setMeme] = useState({
+    topText: "",
+    bottomText: "",
+    randomImage: "http://i.imgflip.com/1bij.jpg",
+  });
 
-	function getMemeImage() {
-		const memesArray = allMemeImages.data.memes
-		const randomNumber = [Math.floor(Math.random()*memesArray.length)];
-		const url = memesArray[randomNumber].url;
-		setMeme(prevMeme => ({
-			...prevMeme,
-			randomImage: url
-		}));
-		console.log(url)
-	}
-	return (
-		<main>
-		<div className="form">
-			<div className="input-container">
-			<input type="text" value={meme.topText} className="first-input" onChange={setTextEvent} placeholder="Text for the top of the image"/>
-			<input type="text" value={meme.bottomText} className="second-input" onChange={setTextEvent} placeholder="Text for the bottom of the image"/>
-			</div>
-			<div className="button-container">
-			<button onClick={getMemeImage} type="button" className="button"><img src={button} alt="" /></button>
-			</div>
-		</div>
-		<div className='image-container'>
-		<img src={meme.randomImage} alt="" className='image'/>
-		</div>
-		</main>
-	)
-}
+console.log(meme)
 
-export default Meme
+  function setTextEvent(event) {
+	  const {name, value} = event.target;
+    setMeme(prevState => ({
+		...prevState,
+        [name]: value
+	})  
+  )}
+
+  useEffect(() => {
+    async function getMemes() {
+      const response = await fetch("https://api.imgflip.com/get_memes");
+      const data = await response.json();
+      setAllMemes(data.data.memes);
+    }
+    getMemes();
+    }, [])
+
+  const [allMemes, setAllMemes] = useState({});
+  console.log(allMemes)
+  function getMemeImage() {
+    const randomNumber = [Math.floor(Math.random() * allMemes.length)];
+    const url = allMemes[randomNumber].url;
+    setMeme((prevMeme) => ({
+      ...prevMeme,
+      randomImage: url,
+    }));
+    console.log(url);
+  }
+  return (
+    <main>
+      <div className="form">
+        <div className="input-container">
+          <input
+            type="text"
+            value={meme.topText}
+            className="first-input"
+            onChange={setTextEvent}
+            placeholder="Top text"
+			name="topText"
+          />
+          <input
+            type="text"
+            value={meme.bottomText}
+            className="second-input"
+            onChange={setTextEvent}
+            placeholder="Bottom text"
+			name="bottomText"
+          />
+        </div>
+        <div className="button-container">
+          <button onClick={getMemeImage} type="button" className="button">
+            <img src={button} alt="" />
+          </button>
+        </div>
+      </div>
+      <div className="image-container">
+        <img src={meme.randomImage} alt="" className="image" />
+		<h2 className="meme--text top">{meme.topText}</h2>
+		<h2 className="meme--text bottom">{meme.bottomText}</h2>
+      </div>
+    </main>
+  );
+};
+
+export default Meme;
